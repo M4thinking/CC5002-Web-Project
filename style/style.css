@@ -1,0 +1,512 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    margin: 0;
+    width: 100%;
+}
+
+td {
+    width: 16%;
+}
+
+/*div{*/
+/*    display: block;*/
+/*    border-width: 1px;*/
+/*    border-style: solid;*/
+/*}*/
+
+h1 {
+    color: #111;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 100px;
+    font-weight: bold;
+    letter-spacing: -1px;
+    line-height: 1;
+    text-align: center;
+}
+
+
+h2 {
+    color: #111;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 30px;
+    font-weight: 300;
+    line-height: 32px;
+    margin: 0 0 10px;
+    text-align: center;
+}
+
+h3 {
+    color: #111;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 32px;
+    padding: 10px;
+    margin-left: 5%;
+}
+
+/*.principal-title {*/
+/*    !* text-shadow from https://stackoverflow.com/questions/13426875/text-border-using-css-border-around-text *!*/
+/*    text-shadow: 2px 0 0 #000000, -2px 0 0 #000000, 0 2px 0 #000000, 0 -2px 0 #000000, 1px 1px #000000, -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000;*/
+/*    color: #68e4c4;*/
+/*    text-align: center;*/
+/*    font-size: 80px;*/
+/*    margin: 5%;*/
+/*    font-weight: bold;*/
+/*}*/
+
+.contenido {
+    margin-top: 52px;
+    align-items: center;
+    padding-bottom: 2%;
+}
+
+.bienvenida {
+    text-align: center;
+    display: flex;
+}
+
+#imagen-tabla {
+    display: block;
+    width: 50%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+th #foto {
+    text-align: center;
+}
+
+#contenedor-imagen {
+    width: 100%;
+    align-items: center;
+}
+
+#banner {
+    display: flex;
+    width: 20%;
+    height: 20%;
+}
+
+#mensaje-inicial {
+    width: 60%;
+}
+
+#banner-image {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin: 10px;
+}
+
+.boton-tabla, .boton-form {
+    border-radius: 4px;
+    background-color: #f2f2f2;
+    /*opacity: 0.7;*/
+}
+
+.boton-tabla:hover {
+    background-color: #ddd;
+}
+
+.menu-boton {
+    padding: 5px 20px;
+    align-items: center;
+}
+
+button {
+    display: inline-flex;
+}
+
+input, textarea, button {
+    padding: 5px;
+}
+
+#main-form {
+    border: black;
+    background-color: #ccb74c;
+    width: 80%;
+    margin: 80px auto;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: rgba(132, 132, 132, 0.57) 0 0 5px 6px;
+    min-width: 930px;
+    max-width: 1000px;
+}
+
+input[type=text], select {
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type=submit]:hover {
+    background-color: #45a049;
+}
+
+/*input:valid,*/
+/*textarea:valid {*/
+/*    background: green;*/
+/*}*/
+
+/*input:invalid,*/
+/*textarea:invalid {*/
+/*    background: red;*/
+/*}*/
+
+/*#password, #comentarios, #nombre, #archivo {*/
+/*    font-size: 10px;*/
+/*}*/
+
+#form-title {
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.container1 {
+    padding: 20px;
+    align-items: center;
+}
+
+.sección-formulario {
+    background-color: #E3C464;
+    padding: 5px 20px 15px 20px;
+    margin: 1px 0px 15px 0px;
+    border: 1px solid lightgrey;
+    border-radius: 3px;
+}
+
+span, button {
+    cursor: pointer;
+}
+
+#gráfico-barra, #gráfico-torta, #gráfico-línea {
+    width: 90%;
+    height: auto;
+    padding: 50px;
+    max-height: 1000px;
+    max-width: 1200px;
+}
+
+textarea {
+    resize: none;
+    width: auto;
+}
+
+/* The container */
+.checkbox-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.checkbox-container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.checkbox-container input:checked ~ .checkmark {
+    background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkbox-container .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+/* Alertas */
+.alert {
+    padding: 15px;
+    background-color: #2196F3; /* blue */
+    color: white;
+    margin-top: 40px;
+    margin-inline: 5%;
+    border-radius: 10px;
+}
+
+/* Botón para cerrar */
+.closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* When moving the mouse over the close button */
+.closebtn:hover {
+    color: black;
+}
+
+/* Tablas de actividades */
+.tabla-actividades {
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 90%;
+    margin: 20px auto;
+    padding: 10%;
+    opacity: 1;
+}
+
+.tabla-actividades thead th {
+    text-align: left;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: #e7cf54;
+    color: rgb(0, 0, 0);
+}
+
+.tabla-actividades td, .tabla-actividades th {
+    padding: 12px 15px;
+}
+
+
+.tabla-actividades tbody tr {
+    text-align: left;
+    background-color: #f2f2f2;
+    border-bottom: 1px solid #dddddd;
+}
+
+.tabla-actividades tr:hover {
+    background-color: #ddd;
+}
+
+.modal-imagen {
+    width: 320px;
+    height: 240px;
+    border-radius: 5%;
+    border-color: #333333;
+    box-shadow: #aaaaaa;
+    margin: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: black;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+#modal {
+    visibility: hidden;
+    display: grid;
+    background-color: #8888;
+    width: 50%;
+    height: 100%;
+    padding: 2rem 5%;
+    place-items: center;
+    position: fixed;
+    inset: 0;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: visibility 0s 400ms, opacity 400ms;
+}
+
+#modal:target, #modal:focus-within {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: all;
+    transition: visibility 0s, opacity 400ms;
+}
+
+#modal div {
+    padding: 2rem;
+    background-color: #A7FFF6;
+}
+
+#zoom-imagen img {
+    width: 800px;
+    height: 600px;
+    background-color: #aaaaaa;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    display: block;
+    padding: 20px;
+    width: fit-content;
+    height: fit-content;
+    max-width: 850px;
+    align-content: center;
+    border-radius: 1%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+
+/* Responsive navbar from w2schools */
+
+/* Add a black background color to the top navigation */
+.topnav {
+    z-index: 1;
+    background-color: #333;
+    overflow: hidden;
+    position: fixed; /* Set the navbar to fixed position */
+    top: 0; /* Position the navbar at the top of the page */
+    width: 100%; /* Full width */
+}
+
+#contenido-externo {
+    margin: 10px;
+    padding: 4%;
+    width: fit-content;
+    height: fit-content;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/* Add an active class to highlight the current page */
+.topnav a.active {
+    background-color: #ccb74c;
+    color: white;
+}
+
+/* Hide the link that should open and close the topnav on small screens */
+.topnav .icon {
+    display: none;
+}
+
+/* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
+@media screen and (max-width: 600px) {
+    /*.principal-title {*/
+    /*    !* text-shadow from https://stackoverflow.com/questions/13426875/text-border-using-css-border-around-text *!*/
+    /*    text-shadow: 2px 0 0 #000000, -2px 0 0 #000000, 0 2px 0 #000000, 0 -2px 0 #000000, 1px 1px #000000, -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000;*/
+    /*    color: #68e4c4;*/
+    /*    text-align: center;*/
+    /*    font-size: 20px;*/
+    /*    margin: 5%;*/
+    /*    font-weight: bold;*/
+    /*}*/
+    .topnav a:not(:first-child) {
+        display: none;
+    }
+
+    .topnav a.icon {
+        float: right;
+        display: block;
+    }
+}
+
+/* The "responsive" class is added to the topnav with JavaScript when the user clicks on the icon. This class makes the topnav look good on small screens (display the links vertically instead of horizontally) */
+@media screen and (max-width: 600px) {
+    .topnav.responsive {
+        position: relative;
+        position: fixed; /* Set the navbar to fixed position */
+        display: block;
+    }
+
+    .topnav.responsive a.icon {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+
+    .topnav.responsive a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+}

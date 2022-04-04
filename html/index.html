@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../style/style.css">
+    <title>U-Friends</title>
+    <link class="icon" rel="icon" type="../logo_c.png" href="../emoticons.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+</head>
+<body>
+
+<!--Navigation bar-->
+<a id="nav-placeholder"></a>
+<script>$(function () {
+    $("#nav-placeholder").load("nav.html");
+});</script>
+
+
+<div class="contenido">
+    <div class="bienvenida">
+        <div id="banner">
+            <img id="banner-image" src="../emoticons.png" alt="Logo de la marca">
+        </div>
+        <div id="mensaje-inicial">
+            <!--            <h1 class="principal-title">¡U-Friends!<small> Acercate a tus amigos, que estas esperando.</small></h1>-->
+            <h1 class="principal-title">¡U-Friends!</h1>
+            <h2>Acercate a tus amigos, que estás esperando.</h2>
+        </div>
+    </div>
+    <!--
+        <div class="menu-boton">
+            <button id="actividad" class="boton-tabla" onclick="location.href='formulario.html'">Agregar actividad</button>
+            <button id="listado-de-actividades" class="boton-tabla" onclick="location.href='actividades.html'">Ver listado
+                de actividades
+            </button>
+            <button id="estadísticas" class="boton-tabla" onclick="location.href='estadísticas.html'">Estadísticas</button>
+        </div>
+    -->
+    <div class="container1">
+        <table id="tabla-resumen-actividades" class="tabla-actividades">
+            <thead>
+            <tr>
+                <th id="inicio">Inicio</th>
+                <th id="término">Término</th>
+                <th id="comuna">Comuna</th>
+                <th id="sector">Sector</th>
+                <th id="tema">Tema</th>
+                <th id="foto">Foto</th>
+            </tr>
+            </thead>
+            <tbody>
+            <script type="text/javascript" src="../scripts/listaActividades.js"
+                    onload="cargarTabla('Nombre organizador','Total Fotos')"></script>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
