@@ -1,0 +1,25 @@
+<div class="contenido">
+    <div class="alert">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        Selecciona una actividad para saber más.
+    </div>
+    <br>
+    <table id="tabla-completa-actividades" class="tabla-actividades">
+        <thead>
+        <tr>
+            <th id="inicio">Inicio</th>
+            <th id="término">Término</th>
+            <th id="comuna">Comuna</th>
+            <th id="sector">Sector</th>
+            <th id="tema">Tema</th>
+            <th id="nombre-organizador">Nombre organizador</th>
+            <th id="total-fotos">Total fotos</th>
+        </tr>
+        </thead>
+        <tbody>
+        <script src="scripts/listaActividades.js" onload="cargarTabla('Foto')"></script>
+        </tbody>
+    </table>
+</div>
+<div id="modal-detalle" class="modal"></div>
+<div id="zoom-imagen" class="modal"></div>

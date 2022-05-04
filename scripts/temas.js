@@ -1,2 +1,0 @@
-let temas = ["Música", "Deporte", "Ciencias", "Religión", "Política", "Tecnología", "Juegos", "Baile", "Comida", "Otro"];
-for (let i = 0; i < temas.length; i++) {document.write('<option value="'+(i+1)+'">'+temas[i]+"</option>");}
