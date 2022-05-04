@@ -15,7 +15,7 @@ for (let i in redes) {
     red = Red.toLowerCase();
     document.write('<label class="checkbox-container">' + Red +
                     '<input type="checkbox" onclick="mostrarContacto(\'check-' + red + '\',\'contacto-' + red + '\')"' +
-                           'id="check-' + red +'" value="'+red+'" name="check-' + red +'">'+
+                           'id="check-' + red +'" name="check-' + red +'">'+
                     '<span class="checkmark"></span>'+
                     '</label>'+
                     '<div class="div-' + red +'">'+

@@ -5,16 +5,19 @@ import sys
 import filetype
 import html
 import re
+import cgitb
+cgitb.enable()
 
 from db import DB
 from datetime import datetime
 
 print("Content-type: text/html; charset=UTF-8\r\n\r\n")
 print()
+
 sys.stdout.reconfigure(encoding='utf-8')
 
 # Establecemos conexion con la base de datos
-# db = DB("3306,", "cc500270_u", "ibuspellen", "cc500270_db")
+# db = DB("localhost", "cc500270_u", "ibuspellen", "cc500270_db", 'utf8')
 db = DB('localhost', 'root', '', 'tarea2', 'utf8')
 
 form = cgi.FieldStorage()
@@ -217,38 +220,43 @@ id_region_comuna = [{"idComunas": ["10301", "10302", "10303", "10304", "10305", 
                                       "80120",
                                       "80121"]}]
 
-region = int(html.escape(form['region'].value))
-if not (1 <= region <= 16):
-    err += "Error en la región ingresada. Por favor, rellene nuevamente el formulario.\n"
+region = html.escape(form['region'].value)
+if region == '' or region == 'sin-region':
+    err += "<li>Error en la región ingresada. No se ha ingresado región."
 
-comuna = html.escape(form['comuna'].value, quote= True)
+else:
+    region = int(html.escape(form['region'].value))
+    if not (1 <= region <= 16):
+        err += "<li>Error en la región ingresada. Por favor, rellene nuevamente el formulario.</li>"
 
-if comuna not in id_region_comuna[region-1]["idComunas"]:
-    err += "Error en la comuna ingresada. Por favor, rellene nuevamente el formulario.\n"
+    comuna = html.escape(form['comuna'].value, quote= True)
+
+    if comuna not in id_region_comuna[region-1]["idComunas"]:
+        err += "<li>Error en la comuna ingresada o asociación con región.</li>"
 
 # Validar sector
 sector = html.escape(form['sector'].value)
 if not (sector == "" or len(sector) <= 100):
-    err += "El nombre de sector ingresado es muy largo. Por favor rellene nuevamente el formulario.\n"
+    err += "<li>El nombre de sector ingresado es muy largo.</li>"
 
 # Validar nombre
 nombre = html.escape(form['nombre'].value, quote=True)
 if not (0 < len(nombre) < 200):
-    err += "El nombre de contacto ingresado es muy largo, o muy corto. Por favor rellene nuevamente el formulario.\n"
+    err += "<li>El nombre de contacto ingresado es muy largo, o muy corto.</li>"
 
 # Validar email
 email = html.escape(form['email'].value, quote=True)
 r_email = r'\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\b'
 
 if (re.fullmatch(r_email, email)) is None:
-    err += "Error en el email ingresado. Por favor, rellene nuevamente el formulario.\n"
+    err += "<li>Error en el email ingresado.</li>"
 
 # Validar celular (opcional)
 r_celular = r'\b\D*([+56]\d [2-9])(\D)(\d{4})(\D)(\d{4})\D*\b'
 celular = html.escape(form['celular'].value, quote=True)
 
 if (re.fullmatch(r_celular, celular)) or celular == "":
-    err += "Teléfono celular ingresado no cumple con el estándar telefónico chileno.\n"
+    err += "<li>Teléfono celular ingresado no cumple con el estándar telefónico chileno.</li>"
 
 # Validar redes sociales/de contacto
 
@@ -263,6 +271,14 @@ url_regex = re.compile(
 
 # Se guardan las redes sociales del formulario
 contact = form['contactar-por']
+
+contact_counter = 0
+for con in contact:
+    if html.escape(con.value, quote=True) != '':
+        contact_counter = contact_counter + 1
+if contact_counter > 5:
+    err += "<li>Excede el numero máximo de 5 contactos.</li>"
+
 wa = html.escape(contact[0].value, quote=True)
 tg = html.escape(contact[1].value, quote=True)
 tw = html.escape(contact[2].value, quote=True)
@@ -275,103 +291,103 @@ ot = html.escape(contact[6].value, quote=True)
 if wa != '':  # si se relleno el input de whatsapp
     url_default = "https://wa.me/"
     if not (4 <= len(wa) <= 50):
-        err += "Error con el formato de 'Whatsapp', red social debe estar entre 4 y 50 caracteres.\n"
+        err += "<li>Error con el formato de 'Whatsapp', red social debe estar entre 4 y 50 caracteres.</li>"
     if wa.find('+') != -1 and wa.find('wa.me') == -1:  # Si es un número de teléfono y no tiene escrito la url
         wa = wa.replace('+', '')
         wa = wa.replace(' ', '')
         url = url_default + wa
         if re.match(url_regex, url) is None:
-            err += "Error con el formato de su usuario de Whatsapp. Por favor, agregue un + antes de su contacto (Ej: " \
-                  "+39 334 840 492).\n"
+            err += "<li>Error con el formato de su usuario de Whatsapp. Por favor, agregue un + antes de su contacto (Ej: " \
+                  "+39 334 840 492).</li>"
     else:  # Solo puede ser URL
         if re.match(url_regex, wa) is None:
-            err += "Error con el formato de su URL al perfil de Whatsapp. Por favor, ingrese un URL válido.\n"
+            err += "<li>Error con el formato de su URL al perfil de Whatsapp. Por favor, ingrese un URL válido.</li>"
 
 # Twitter
 if tw != '':  # si se relleno el input de twitter
     url_default = "https://www.twitter.com/"
     if not (4 <= len(tw) <= 50):
-        err += "Error con el formato de 'Twitter', red social debe estar entre 4 y 50 caracteres.\n"
-    elif tw.find('@') != -1 and tw.find('twitter') == -1:  # Si es un usuario y no tiene escrito la url
+        err += "<li>Error con el formato de 'Twitter', red social debe estar entre 4 y 50 caracteres.</li>"
+    elif tw.find('@') != -1 and tw.find('www.twitter.com') == -1:  # Si es un usuario y no tiene escrito la url
         tw = tw.replace('@', '')
         url = url_default + tw
         if re.match(url_regex, url) is None:
-            err += "Error con el formato de su usuario de Twitter. Por favor, agregue un @ antes de su usuario (Ej: " \
-                  "@nombre_usuario\n"
+            err += "<li>Error con el formato de su usuario de Twitter. Por favor, agregue un @ antes de su usuario (Ej: " \
+                  "@nombre_usuario</li>"
     else:  # Solo puede ser URL
         if re.match(url_regex, tw) is None:
-            err += "Error con el formato de su URL al perfil de Twitter. Por favor, ingrese un URL válido.\n"
+            err += "<li>Error con el formato de su URL al perfil de Twitter. Por favor, ingrese un URL válido.</li>"
 
 # Telegram
 if tg != '':  # Si se relleno el input de telegram
     url_default = "https://web.telegram.org/"
     if not (4 <= len(tg) <= 50):
-        err += "Error con el formato de 'Telegram', red social debe estar entre 4 y 50 caracteres.\n"
-    elif tg.find('@') != -1 and tg.find('telegram') == -1:  # Si es un usuario y no tiene escrito la url
+        err += "<li>Error con el formato de 'Telegram', red social debe estar entre 4 y 50 caracteres.</li>"
+    elif tg.find('@') != -1 and tg.find('web.telegram.org') == -1:  # Si es un usuario y no tiene escrito la url
         tg = tg.replace('@', '')
         url = url_default + tg
         if re.match(url_regex, url) is None:
-            err += "Error con el formato de su usuario de Telegram. Por favor, agregue un @ antes de su usuario (" \
-                  "Ej: @nombre_usuario).\n"
+            err += "<li>Error con el formato de su usuario de Telegram. Por favor, agregue un @ antes de su usuario (" \
+                  "Ej: @nombre_usuario).</li>"
     else:  # Solo puede ser URL
         if re.match(url_regex, tg) is None:
-            err += "Error con el formato de su URL al perfil de Telegram. Por favor, ingrese un URL válido.\n"
+            err += "<li>Error con el formato de su URL al perfil de Telegram. Por favor, ingrese un URL válido.</li>"
 
 # Instagram
 if ig != '':  # Si se relleno el input de instagram
     url_default = "https://www.instagram.com/"
     if not (4 <= len(ig) <= 50):
-        err += "Error con el formato de 'Instagram', red social debe estar entre 4 y 50 caracteres.\n"
-    elif ig.find('@') != -1 and ig.find('instagram') == -1:  # Si es un usuario y no tiene escrito la url
-        ig = ig.replace('@', '')
-        url = url_default + ig
-        if re.match(url_regex, url) is None:
-            err += "Error con el formato de su usuario de Instagram. Por favor, agregue un @ antes de su usuario (" \
-                  "Ej: @nombre_usuario).\n"
+        err += "<li>Error con el formato de 'Instagram', red social debe estar entre 4 y 50 caracteres.</li>"
+    elif ig.find('@') != -1 and ig.find('www.instagram.com') == -1:  # Si es un usuario y no tiene escrito la url
+            ig = ig.replace('@', '')
+            url = url_default + ig
+            if re.match(url_regex, url) is None:
+                err += "<li>Error con el formato de su usuario de Instagram. Por favor, agregue un @ antes de su usuario (" \
+                      "Ej: @nombre_usuario).</li>"
     else:  # Solo puede ser URL
         if re.match(url_regex, ig) is None:
-            err += "Error con el formato de su URL al perfil de Instagram. Por favor, ingrese un URL válido.\n"
+            err += "<li>Error con el formato de su URL al perfil de Instagram. Por favor, ingrese un URL válido.</li>"
 
 # Facebook
 if fb != '':  # Si se relleno el input de facebook
     url_default = "https://www.facebook.com/"
     if not (4 <= len(fb) <= 50):
-        err += "Error con el formato de 'Facebook', red social debe estar entre 4 y 50 caracteres.\n"
-    elif fb.find('@') != -1 and fb.find('facebook') == -1:  # Si es un usuario y no tiene escrito la url
+        err += "<li>Error con el formato de 'Facebook', red social debe estar entre 4 y 50 caracteres.</li>"
+    elif fb.find('@') != -1 and fb.find('www.facebook.com') == -1:  # Si es un usuario y no tiene escrito la url
         fb = fb.replace('@', '')
         url = url_default + fb
         if re.match(url_regex, url) is None:
-            err += "Error con el formato de su usuario de Facebook. Por favor, agregue un @ antes de su usuario (Ej: " \
-                  "@nombre_usuario).\n"
+            err += "<li>Error con el formato de su usuario de Facebook. Por favor, agregue un @ antes de su usuario (Ej: " \
+                  "@nombre_usuario).</li>"
     else:  # Solo puede ser URL
         if re.match(url_regex, fb) is None:
-            err += "Error con el formato de su URL al perfil de Facebook. Por favor, ingrese un URL válido.\n"
+            err += "<li>Error con el formato de su URL al perfil de Facebook. Por favor, ingrese un URL válido.</li>"
 
 # Tik Tok
 if tk != '':  # Si se relleno el input de tiktok
     url_default = "https://www.tiktok.com/"
     if not (4 <= len(tk) <= 50):
-        err += "Error con el formato de 'Tik Tok', red social debe estar entre 4 y 50 caracteres.\n"
-    elif tk.find('@') != -1 and tk.find('tiktok') == -1:  # Si es un usuario y no tiene escrito la url
+        err += "<li>Error con el formato de 'Tik Tok', red social debe estar entre 4 y 50 caracteres.</li>"
+    elif tk.find('@') != -1 and tk.find('www.tiktok.com') == -1:  # Si es un usuario y no tiene escrito la url
         tk = tk.replace('@', '')
         url = url_default + tk
         if re.match(url_regex, url) is None:
-            err += "Error con el formato de su usuario de TikTok. Por favor, agregue un @ antes de su usuario (Ej: " \
-                  "@nombre_usuario).\n"
+            err += "<li>Error con el formato de su usuario de TikTok. Por favor, agregue un @ antes de su usuario (Ej: " \
+                  "@nombre_usuario).</li>"
     else:  # Solo puede ser URL
         if re.match(url_regex, tk) is None:
-            err += "Error con el formato de su URL al perfil de TikTok. Por favor, ingrese un URL válido.\n"
+            err += "<li>Error con el formato de su URL al perfil de TikTok. Por favor, ingrese un URL válido.</li>"
 
 # Otra
 if ot != '':
-    if not (3 <= len(ot) <= 15):
-        err += "Error con el formato de 'Otra red social', red social debe estar entre 3 y 15 caracteres.\n"
+    if not (4 <= len(ot) <= 50):
+        err += "<li>Error con el formato de 'Otra red social', red social debe estar entre 3 y 15 caracteres.</li>"
     elif ot.find('@') != -1 or ot.find('+') != -1:  # Si se ingreso un nombre de usuario o un numero de telefono extra
-        err += "Error con el formato de 'Otra red social'. Por favor, ingrese una URL válida a su perfil. No ingrese " \
-              "un usuario o numero.\n"
+        err += "<li>Error con el formato de 'Otra red social'. Por favor, ingrese una URL válida a su perfil. No ingrese " \
+              "un usuario o numero.</li>"
     else:
         if re.match(url_regex, ot) is None:
-            err += "Error con el formato de 'Otra red social'. Por favor, ingrese una URL válida a su perfil.\n"
+            err += "<li>Error con el formato de 'Otra red social'. Por favor, ingrese una URL válida a su perfil.</li>"
 
 
 # Fecha de inicio y término
@@ -381,12 +397,12 @@ dia_hora_termino = html.escape(form['dia-hora-termino'].value, quote=True)
 try:
     datetime.strptime(dia_hora_inicio, "%Y-%m-%d %H:%M")
 except ValueError:
-    err += "Error con la fecha de inicio del evento. Por favor, rellene nuevamente el formulario.\n"
+    err += "<li>Error con la fecha de inicio del evento.</li>"
 
 try:
     datetime.strptime(dia_hora_termino, "%Y-%m-%d %H:%M")
 except ValueError:
-    err += "Error con la fecha de término del evento. Por favor, rellene nuevamente el formulario.\n"
+    err += "<li>Error con la fecha de término del evento.</li>"
 
 # Validar descripción
 descripcion = html.escape(form['descripcion-evento'].value, quote=True)
@@ -399,16 +415,16 @@ otro_tema = ""
 if not isinstance(tema, list): # Se elige un tema de la bd o no lo ingresa
     tema_id = html.escape(form['tema'].value, quote=True)
     if (tema_id == ''):
-        err += "Error en el tema ingresado, ingresa un tema.\n"
+        err += "<li>Error en el tema ingresado, ingresa un tema.</li>"
     else:
         tema_id = int(html.escape(form['tema'].value, quote=True))
         if not (temas_actuales[0][0] <= int(tema_id) <= temas_actuales[-1][0]):
-            err += "Error en el tema ingresado, ingresa un tema válido.\n"
+            err += "<li>Error en el tema ingresado, ingresa un tema válido.</li>"
 else:  # Se elige otro tema asociado a un nuevo input [id, nombre]
     tema_id = int(html.escape(form['tema'][0].value, quote=True))
     otro_tema = html.escape(form['tema'][1].value, quote=True)
-    if not (3 <= len(otro_tema) <= 15 and tema_id == (temas_actuales[-1][0]+1) ):
-        err += "Error en el tema ingresado, ingresa un tema con entre 3 y 15 caracteres.\n"
+    if not (3 <= len(otro_tema) <= 15 and tema_id == (temas_actuales[-1][0]+1) ) or otro_tema == '':
+        err += "<li>Error en el tema ingresado, ingresa un tema con entre 3 y 15 caracteres.</li>"
 
 MAX_FILE_SIZE = 100*1000000 # 100 MB
 
@@ -417,48 +433,44 @@ if not isinstance(photos, list):
 if not isinstance(contact, list):
     contact = [contact]
 
+photo_counter = 0
 for photo in photos:
+    photo_counter = photo_counter + 1
     if photo.filename:
         tipo = photo.type
         size = os.fstat(photo.file.fileno()).st_size
         photo_type = filetype.guess(photo.file)
         photo.file.seek(0, 0)
         if (photo_type.mime != 'image/jpeg') and (photo_type.mime != 'image/png') and (photo_type.mime != 'image/jpg'):
-            err += "Una de sus fotos no corresponde al tipo correcto. Por favor, cerciórese de que estos sean de tipo JPG, JPEG o PNG.\n"
+            err += "<li>Una de sus fotos no corresponde al tipo correcto. Por favor, cerciórese de que estos sean de tipo JPG, JPEG o PNG.</li>"
         if size > MAX_FILE_SIZE:
-            err += "Una de sus fotos pesa demasiado. Por favor, verifique que el peso de cada archivo no sea mayor a 100MB.\n"
-    else:
-        err += "Error, foto no subida. Por favor, verifique la correcta subida de archivos.\n"
+            err += "<li>Una de sus fotos pesa demasiado. Por favor, verifique que el peso de cada archivo no sea mayor a 100MB.</li>"
+    else: # Este caso cuenta el de 0 fotos, antes que el de largo.
+        err += "<li>Error, foto no subida. Por favor, verifique la correcta subida de archivos.</li>"
 
-activity = (comuna, sector, nombre, email, celular, dia_hora_inicio, dia_hora_termino, descripcion, tema_id, otro_tema)
+if not (0 < photo_counter <= 5):
+    err += "<li>Error, no existen fotos o se superó la cantidad máxima de 5 fotos.</li>"
 
 if err != "":  # Si hubo errores
     # https://anakena.dcc.uchile.cl/~cc500216/cgi-bin/form.py
-    print(f"""
+    form = open('html/form.html', mode="r", encoding="utf-8").read()
+
+    content = f"""
         <div class="warn">
             <span class="closebtn black" onclick="this.parentElement.style.display=\'none\';">&times;</span>
-            Se encontraron los siguientes errores:\n{err}
+            <b>Se encontraron los siguientes errores:</b><ul>{err}</ul> Por favor, rellene nuevamente el formulario.
         </div>
-    """)
-    # meta = '''
-    #     <meta http-equiv="refresh" content="50; url='form.py'">
-    # '''
-    #
-    # title = 'Estas siendo redirigido...'
-    #
-    # content = f"""
-    #     <div class='contenido'>
-    #     <p> Su formulario ha fallado en: " {err} "</p>"
-    #     <p> Si no ha sido redirigido en 50seg. haga click <a href='form.py'>aquí</a> </p>
-    #     </div>
-    # """
-    # with open('templates/template.html', mode="r", encoding="utf-8") as template:
-    #     file = template.read()
-    #     print(file.format(meta, title, content))
+    """ + form
+
+
+    with open('templates/template.html', mode="r", encoding="utf-8") as template:
+        file = template.read()
+        print(file.format('', 'U-Friends', content))
 
 else: # No hay errores, se aplica la conexión
-
+    activity = (comuna, sector, nombre, email, celular, dia_hora_inicio, dia_hora_termino, descripcion, tema_id, otro_tema)
     db = DB('localhost', 'root', '', 'tarea2', 'utf8')
+    # db = DB("3306", "cc500270_u", "ibuspellen", "cc500270_db", 'utf8')
     db.save_data(activity,contact, photos) # insertamos la informacion en la base
     head = f"""
             <meta http-equiv="refresh" content="5;url='index.py'">

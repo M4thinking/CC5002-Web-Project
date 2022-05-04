@@ -48,7 +48,7 @@ function abrirImagen(imageRoute){
     document.getElementById('zoom-imagen').innerHTML =
     '<div class= modal-content>'+
         '<div><span class="close" onclick="cerrar('+"\'zoom\'"+')">&times; Cerrar</span></div><br><br>' +
-        '<img class="modal-imagen" src="../'+imageRoute+'"'+' alt="zoom de la imagen del evento.">'+
+        '<img class="modal-imagen" src="/'+imageRoute+'"'+' alt="zoom de la imagen del evento.">'+
     '</div>';
     document.getElementById('zoom-imagen').style.display = "block";
 }

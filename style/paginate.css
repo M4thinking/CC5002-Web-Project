@@ -22,7 +22,7 @@ div.paginate input[type='button'].active{
     font-weight: bold;
 }
 div.paginate input[type='button']:disabled{
-    color: grey!important;
+    /*color: grey!important;*/
     cursor: not-allowed;
 }
 

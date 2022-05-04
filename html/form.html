@@ -1,6 +1,8 @@
 <div id="contenido-formulario" class="contenido">
+    <div id="warning"></div>
     <!-- Form -->
-    <form id="main-form" method="post" action="envío-exitoso.html" onsubmit="return validar();" novalidate>
+    <form id="main-form" method="POST" action="../cgi-bin/envio-exitoso.py" enctype="multipart/form-data"
+          onsubmit="return submit(); " novalidate>
         <!-- Form title -->
         <div id="form-title">Informar actividad</div>
         <br>
@@ -17,7 +19,7 @@
             <!-- Selección de la Comuna -->
             <label for="comuna">Comuna*</label><br>
             <select id="comuna" name="comuna">
-                <script src="scripts/lugarEvento.js"></script>
+                <script src="../scripts/lugarEvento2.js"></script>
             </select>
 
             <!-- Sector del Evento -->
@@ -63,7 +65,7 @@
                 </script>
                 <label id="contactar">Contactar por</label><br><br>
                 <div id="aviso"></div>
-                <script src="scripts/listaContacto.js"></script>
+                <script src="../scripts/listaContacto.js"></script>
                 <script>
                     /* Evita marcado de más de 5 casillas, igualmente se valida */
                     $('input[type=checkbox]').on('change', function (e) {
@@ -88,7 +90,7 @@
                 <label for="dia-hora-inicio">Día y hora de inicio*</label><br>
                 <input type="text" id="dia-hora-inicio" name="dia-hora-inicio" size="20" placeholder="aaaa-mm-dd hh:mm"
                        required>
-                <script src="scripts/listaActividades.js"
+                <script src="../scripts/listaActividades.js"
                         onload="fecha('dia-hora-inicio')"></script>
             </div>
 
@@ -97,7 +99,7 @@
                 <label for="dia-hora-termino">Día y hora de término.</label><br>
                 <input type="text" id="dia-hora-termino" name="dia-hora-termino" size="20"
                        placeholder="aaaa-mm-dd hh:mm">
-                <script src="scripts/listaActividades.js"
+                <script src="../scripts/listaActividades.js"
                         onload="fecha('dia-hora-termino',3)"></script>
             </div>
             <!-- Descripción del Evento -->
@@ -113,13 +115,21 @@
             <div class="input-group">
                 <label for="tema">Tema*</label><br>
                 <select name="tema" id="tema"
-                        onchange="showfield(this.options[this.selectedIndex].value,this.options.length)" required>
-                    <option value="">Selecciona una opción</option>
-                    <script src="scripts/temas.js"></script>
+                        onchange="showfield(this.options[this.selectedIndex].text)" >
+                    <script>
+                        $.ajax({
+                            url: "/cgi-bin/temas.py",
+                            type: "GET",
+                            success: function (response) {
+                                $('#tema').html(response);
+                            }
+                        })
+                    </script>
                 </select>
+
                 <script>
-                    function showfield(value, len) {
-                        if (value == (len - 1)) { //"otro siempre está en la última categoría disponible"
+                    function showfield(text) {
+                        if (text == 'otro') { //"otro siempre está en la última categoría disponible"
                             document.getElementById('especificar-otro').innerHTML =
                                 'Nuevo tema' + ': <input type="text" id="otro-tema" name="tema" minlength="3" maxlength="15"/>';
                         } else {
@@ -185,7 +195,8 @@
                     <p>¿Está seguro que desea agregar esta actividad?</p>
                 </div>
                 <div class="modal-footer">
-                    <button class="confirmar" type="submit" value="Submit" onclick="notShowDiv()">Sí, estoy seguro
+                    <button class="confirmar" type="submit" value="Submit" onclick="notShowDiv();submit()">Sí, estoy
+                        seguro
                     </button>
                     <button class="rechazar" type="button" onclick="notShowDiv()">No, no estoy seguro, quiero volver al
                         formulario
