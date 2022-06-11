@@ -3,7 +3,9 @@ import hashlib
 import sys
 import os
 import cgitb
+
 cgitb.enable()
+
 
 class DB:
     def __init__(self, host, user, password, database, charset):
@@ -28,7 +30,7 @@ class DB:
         id_tema = data[8]
         otro_tema = data[9]
         sql = "SELECT COUNT(*) FROM tema TM WHERE TM.id = '%s'"
-        self.cursor.execute(sql, (id_tema, ))
+        self.cursor.execute(sql, (id_tema,))
         if self.cursor.fetchall()[0][0] == 0:  # Si no existe, se crea un nuevo tema
             sql = "INSERT INTO tema (nombre) VALUES (%s)"
             self.cursor.execute(sql, (otro_tema,))
@@ -100,10 +102,18 @@ class DB:
         self.cursor.execute(sql)
         return self.cursor.fetchall()
 
-    def get_temas(self):
-        sql = '''SELECT * FROM tema FT'''
+    def get_temas(self, id_tema=-1):
+        if id_tema == -1:
+            sql = '''SELECT * FROM tema FT'''
+        else:
+            sql = f"""SELECT nombre FROM tema TE WHERE id = '{id_tema}%'"""
         self.cursor.execute(sql)
         return self.cursor.fetchall()
+
+    def get_activities(self):
+        # seleccionamos todos los datos de la tabla
+        self.cursor.execute(f'SELECT * FROM actividad ORDER BY comuna_id, dia_hora_inicio ASC')  # Agregamos el input a la consulta con un f-string
+        return self.cursor.fetchall()  # retornamos los datos de la tabla
 
     def get_activity(self, id_actividad):
         """
@@ -122,11 +132,14 @@ class DB:
         return self.cursor.fetchall()
 
     def get_region_comuna(self):
-        sql = '''SELECT R.nombre, C.nombre FROM region R, comuna C WHERE R.id = C.region_id'''
+        sql = '''SELECT R.nombre, C.nombre FROM region R, comuna C WHERE R.id = C.region_id '''
         self.cursor.execute(sql)
         return self.cursor.fetchall()
 
-        # OJOS
+    def get_comuna(self, id_comuna):
+        sql = f"SELECT C.nombre FROM comuna C WHERE C.id = '{id_comuna}%'"
+        self.cursor.execute(sql)
+        return self.cursor.fetchall()
 
     def search(self, name):
         sql = f"select nombre from medico where nombre LIKE '{name}%'"
@@ -141,7 +154,36 @@ class DB:
         self.cursor.execute(sql)
         return self.cursor.fetchall()
 
-    def get_images(self, id_actividad):
-        sql = f"SELECT id, ruta_archivo, nombre_archivo FROM foto WHERE actividad_id='{id_actividad}%'"
+    def get_images(self, id_actividad, get_all=True):
+        if get_all:
+            sql = f"SELECT id, ruta_archivo, nombre_archivo FROM foto WHERE actividad_id='{id_actividad}%'"
+        else:
+            sql = f"SELECT ruta_archivo FROM foto WHERE actividad_id='{id_actividad}%'"
         self.cursor.execute(sql)
+        return self.cursor.fetchall()
+
+    def events_per_day(self):
+        sql = '''SELECT DATE_FORMAT(dia_hora_inicio, '%Y-%m-%d') as fecha,
+         count(*) as total from actividad group by DATE_FORMAT(dia_hora_inicio, '%Y-%m-%d')
+          order by DATE_FORMAT(dia_hora_inicio, '%Y-%m-%d') asc;'''
+        self.cursor.execute(sql)
+        return self.cursor.fetchall()
+
+    def count_type(self):
+        sql = """SELECT TE.nombre as temas, count(*) AS total 
+                FROM actividad AC, tema TE 
+                WHERE AC.tema_id = TE.id 
+                GROUP BY AC.tema_id 
+                ORDER BY total ASC;"""
+        self.cursor.execute(sql)
+        return self.cursor.fetchall()
+
+    def events_per_hour(self):
+        sql1 = '''SELECT DATE_FORMAT(dia_hora_inicio, '%Y-%m') as fecha,
+        COUNT(CASE WHEN time(dia_hora_inicio) >= '00:00:00' and time(dia_hora_inicio) <= '10:59:59' THEN 1 ELSE NULL END),
+        COUNT(CASE WHEN time(dia_hora_inicio) >= '11:00:00' and time(dia_hora_inicio) <= '14:59:59' THEN 1 ELSE NULL END), 
+        COUNT(CASE WHEN time(dia_hora_inicio) >= '15:00:00' and time(dia_hora_inicio) <= '23:59:59' THEN 1 ELSE NULL END)
+        FROM actividad group by DATE_FORMAT(dia_hora_inicio, '%Y-%m');
+        '''
+        self.cursor.execute(sql1)
         return self.cursor.fetchall()

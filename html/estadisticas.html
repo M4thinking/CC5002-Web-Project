@@ -1,12 +1,215 @@
 <div class="contenido">
-    <div class="bienvenida">
-        <div id="imágenes-estadísticas">
-            <img id="gráfico-línea" src="../data/estadisticas/Actividad.png"
-                 alt="Cantidad de actividades diarias">
-            <img id="gráfico-torta" src="../data/estadisticas/ActividadPorTipo.png"
-                 alt="Cantidad de actividades por tema">
-            <img id="gráfico-barra" src="../data/estadisticas/ActividadPorInicio.png"
-                 alt="Cantidad de actividades según inicio">
+    <div class="main">
+        <div>
+            <div id="actividad-por-dia" style="width:100%; height:400px;">
+
+            </div>
+            <div class="oculto">
+                <table id="data-actividades">
+                    <thead>
+                    <tr>
+                        <td>Fecha</td>
+                        <td>Total</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br>
+        <div>
+            <div id="actividad-por-tema" style="width:100%; height:400px;">
+            </div>
+
+            <div class="oculto">
+                <table id="data-tema">
+                    <thead>
+                    <tr>
+                        <td>Tipo</td>
+                        <td>Total</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div>
+            <div id="actividades-por-hora" style="width:100%; height:400px;">
+            </div>
+
+            <div class="oculto">
+                <table id="dataHora">
+                    <thead>
+                    <tr>
+                        <td>Fecha</td>
+                        <td>Antes de las 11:00</td>
+                        <td>Entre 11:01 y 14:59</td>
+                        <td>Después de las 15:00</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div>
+            <button class="volver" onclick="window.location='../cgi-bin/index.py'">Volver a la portada</button>
         </div>
     </div>
+    <script>
+        $(document).ready(function () { // Al momento de estar cargado el documento, se ejecuta la sig. funcion
+            let xhttp = new XMLHttpRequest(); // creamos un nuevo xhr
+            let query = new FormData();
+            query.append('tipo', 'eventosxdia');
+            xhttp.open('POST', '../cgi-bin/charts.py'); // A donde se realiza la petición
+            xhttp.onreadystatechange = function () { // si la respuesta cambia su estado
+                if (xhttp.readyState === 4 && xhttp.status === 200) { // si la petición esta lista y salió correctamente
+                    let data = JSON.parse(xhttp.response);
+                    let rows = "";
+                    for (let key in data) {
+                        let value = data[key];
+                        rows += "<tr><td>" + value[0] + "</td><td>" + value[1] + "</td>" + "</tr>"; // agregamos los datos a la tabla correspondiente
+                    }
+                    $(rows).appendTo("#data-actividades tbody");
+
+                    Highcharts.chart('actividad-por-dia', {
+                        title: {
+                            style: {
+                                fontSize: '20px'
+                            },
+                            text: 'Actividades por dia'
+                        },
+                        data: {
+                            table: 'data-actividades'
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'Cantidad'
+                            }
+                        },
+                        xAxis: {
+                            title: {
+                                text: 'Fecha'
+                            }
+                        },
+                        plotOptions: {
+                            series: {
+                                marker: {
+                                    enabled: false
+                                }
+                            }
+                        }
+                    });
+                }
+            };
+            xhttp.send(query); // Mandamos la petición
+
+            // 2da Request, grafico de torta
+
+            const xhttp2 = new XMLHttpRequest(); // creamos un nuevo xhr
+            let query2 = new FormData();
+            query2.append('tipo', 'torta')
+            xhttp2.open('POST', '../cgi-bin/charts.py'); // A donde se realiza la petición
+            xhttp2.onreadystatechange = function () { // si la respuesta cambia su estado
+                if (xhttp2.readyState === 4 && xhttp2.status === 200) { // si la petición esta lista y salio correctamente
+                    var data = JSON.parse(xhttp2.response);
+                    var rows = "";
+                    for (var key in data) {
+                        let value = data[key];
+                        rows += "<tr><td>" + value[0] + "</td><td>" + value[1] + "</td>" + "</tr>"; // agregamos los datos a la tabla correspondiente
+                    }
+                    $(rows).appendTo("#data-tema tbody");
+
+                    Highcharts.chart('actividad-por-tema', {
+                        chart: {
+                            type: 'pie'
+                        },
+                        title: {
+                            style: {
+                                fontSize: '20px'
+                            },
+                            text: 'Actividades por tipo'
+                        },
+                        data: {
+                            table: 'data-tema'
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'Cantidad'
+                            }
+                        },
+                        xAxis: {
+                            title: {
+                                text: 'Tipo'
+                            }
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                                }
+                            }
+                        }
+                    });
+                }
+            };
+            xhttp2.send(query2); // Mandamos la petición
+
+            // 3ra Request, gráfico de 3 barras por fecha
+
+            const xhttp3 = new XMLHttpRequest(); // creamos un nuevo xhr
+            let query3 = new FormData();
+            query3.append('tipo', 'barras')
+            xhttp3.open('POST', '../cgi-bin/charts.py'); // A donde se realiza la petición
+            xhttp3.onreadystatechange = function () { // si la respuesta cambia su estado
+                if (xhttp3.readyState === 4 && xhttp3.status === 200) { // si la petición esta lista y salió correctamente
+                    console.log(xhttp3.response);
+                    let data = JSON.parse(xhttp3.response);
+                    let rows = "";
+                    for (let key in data) {
+                        let value = data[key];
+                        rows += "<tr><td>" + value[0] + "</td><td>" + value[1] + "</td>" + "<td>" + value[2] + "</td><td>" + value[3] + "</td></tr>"; // agregamos los datos a la tabla correspondiente
+                    }
+                    $(rows).appendTo("#dataHora tbody");
+
+                    Highcharts.chart('actividades-por-hora', {
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            style: {
+                                  fontSize: '20px'
+                               },
+                            text: 'Eventos mensuales por hora de inicio'
+                        },
+                        data: {
+                            table: 'dataHora'
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'Cantidad'
+                            }
+                        },
+                        xAxis: {
+                            title: {
+                                text: 'Fecha'
+                            }
+                        },
+                        plotOptions: {},
+                        title: {
+                            text: 'Eventos mensuales por hora de inicio'
+                        }
+                    });
+                }
+            };
+            xhttp3.send(query3); // Mandamos la petición
+        })
+    </script>
 </div>
